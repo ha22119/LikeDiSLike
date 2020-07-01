@@ -3,11 +3,18 @@ package com.example.likedislike;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try{
+            Thread.sleep(500);
+        } catch (Exception e) {
+            Toast.makeText(this,"오류", Toast.LENGTH_SHORT).show();
+        }
+
         setTheme(R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
