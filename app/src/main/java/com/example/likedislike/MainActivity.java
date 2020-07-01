@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // HSM에서 수정
+        //hwb에서 수정
 
     }
 }
