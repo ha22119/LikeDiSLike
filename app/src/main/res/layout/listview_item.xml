@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_border_layout"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/emailView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <Button
+            android:id="@+id/likeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:text="LiKE"
+            android:textSize="24sp"
+            android:textColor="@color/colorAccent"
+            android:background="@drawable/button_round_left"
+            android:drawableLeft="@drawable/like_button_circle"
+            />
+        <Button
+            android:id="@+id/disLikeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:text="DiSLiKE"
+            android:textSize="24sp"
+            android:textColor="@color/colorAccent"
+            android:background="@drawable/button_round_right"
+            android:drawableRight="@drawable/dislike_button_circle"
+            />
+    </LinearLayout>
+</LinearLayout>
