@@ -1,12 +1,12 @@
 package com.example.likedislike;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +16,25 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity {
     Spinner subjectSpinner;
     Button listButton, searchButton;
     ListView listView;
 
+    public final static String TAG = "Yahoo";
     static boolean calledAlready = false;
 
     private ArrayList<LDLObject> dataSet = new ArrayList<>();
+    private LDLAdapter ldlAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,8 @@ public class HomeActivity extends AppCompatActivity {
             calledAlready = true;
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("likedislike"); // db 주소 저장
 
         subjectSpinner = findViewById(R.id.subjectSpinner);
         subjectSpinner.setSelection(0);
@@ -53,58 +55,45 @@ public class HomeActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         listView = findViewById(R.id.listView);
 
-        final LDLAdapter ldlAdapter = new LDLAdapter(getApplicationContext(), dataSet);
+        ldlAdapter = new LDLAdapter(getApplicationContext(), dataSet);
         listView.setAdapter(ldlAdapter);
 
-        dataSet.add(new LDLObject("ha", "실험용", 0, 0));
-
-        myRef.child("likeDislike").addChildEventListener(new ChildEventListener() {
+        myRef.addValueEventListener(new ValueEventListener(){
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot fileSnapshot : dataSnapshot.getChildren()) {
-                    String email = fileSnapshot.child("user").getValue(String.class);
+                    Log.d(TAG,"ldl에 값 넣기");
+                    String user = fileSnapshot.child("user").getValue(String.class);
                     String text = fileSnapshot.child("text").getValue(String.class);
-                    int like = fileSnapshot.child("like").getValue(Integer.class);
-                    int dislike = fileSnapshot.child("dislike").getValue(Integer.class);
-
-                    LDLObject ldl = new LDLObject(email,text,like,dislike);
+                    Long like = fileSnapshot.child("like").getValue(Long.class);
+                    Long dislike = fileSnapshot.child("dislike").getValue(Long.class);
+                    LDLObject ldl = new LDLObject(user,text,like,dislike);
                     dataSet.add(ldl);
                 }
                 ldlAdapter.notifyDataSetChanged();
+                Log.d(TAG,"값 바뀜요");
             }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(HomeActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         }
     }
 
     class LDLObject {
-        String email;
-        String text;
-        int like=0;
-        int dislike=0;
+        String user="null";
+        String text="null";
+        long like=0;
+        long dislike=0;
 
-        LDLObject(){}
+        LDLObject(){} // 기본 생성자
 
-        LDLObject(String email, String text, int like, int dislike) {
-            this.email = email;
+        public LDLObject(String user, String text,Long like,Long dislike) {
+            Log.d("Yahoo","LDLObject 생성");
+            this.user = user;
             this.text = text;
-            this.like = like;
+            this.like =like;
             this.dislike = dislike;
         }
     }
@@ -115,6 +104,7 @@ public class HomeActivity extends AppCompatActivity {
 
         public LDLAdapter(Context context, ArrayList<LDLObject> dataSet) {
             super();
+            Log.d("Yahoo","LDLAdapter 생성");
             this.context = context;
             this.dataSet = dataSet;
         }
@@ -144,7 +134,7 @@ public class HomeActivity extends AppCompatActivity {
             final Button disLikeButton = convertView.findViewById(R.id.disLikeButton);
 
             final LDLObject ldl = dataSet.get(position);
-            emailView.setText(ldl.email);
+            emailView.setText(ldl.user);
             textView.setText(ldl.text);
             likeButton.setText("LIKE : "+ldl.like);
             disLikeButton.setText("DISLIKE : "+ldl.dislike);
@@ -168,8 +158,6 @@ public class HomeActivity extends AppCompatActivity {
             });
 
             return convertView;
-
-
         }
     }
 
