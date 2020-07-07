@@ -26,7 +26,6 @@ public class SignActivity extends AppCompatActivity {
     Button verifyEmailButton, signUpBtn;
 
     final static String TAG = "Yahoo";
-
     private FirebaseAuth mAuth;
 
     @Override
@@ -38,14 +37,10 @@ public class SignActivity extends AppCompatActivity {
         editPwd = findViewById(R.id.editPwd);
         reEditPwd = findViewById(R.id.reEditPwd);
 
-//        signInBtn = findViewById(R.id.signInBtn);
-//        signOutButton = findViewById(R.id.signOutButton);
         verifyEmailButton = findViewById(R.id.verifyEmailButton);
         signUpBtn =findViewById(R.id.signUpBtn);
 
         mAuth = FirebaseAuth.getInstance();
-
-
 
         verifyEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,20 +54,6 @@ public class SignActivity extends AppCompatActivity {
                 createAccount(editEmail.getText().toString(), editPwd.getText().toString());
             }
         });
-
-        //        signInBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loginAccount(editEmail.getText().toString(), editPwd.getText().toString());
-//            }
-//        });
-//        signOutButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                signOut();
-//            }
-//        });
-
     }
 
     @Override
@@ -80,35 +61,11 @@ public class SignActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
-
-    private void loginAccount(String email, String password) { // 로그인
-        Log.d(TAG, "loginAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithEmail:성공");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                        } else {
-                            Log.w(TAG, "signInWithEmail:실패", task.getException());
-                            Toast.makeText(SignActivity.this, "인증 실패",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-    }
-
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
         }
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -128,14 +85,7 @@ public class SignActivity extends AppCompatActivity {
                 });
     }
 
-    private void signOut() {
-        mAuth.signOut();
-        Log.d(TAG,"로그아웃 함");
-        Toast.makeText(SignActivity.this, "로그아웃 됨",
-                Toast.LENGTH_SHORT).show();
-        Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(LogOutIntent);
-    }
+
 
     private void sendEmailVerification() { // 이메일 인증 보내기
         verifyEmailButton.setEnabled(false);

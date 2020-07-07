@@ -31,29 +31,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
-        <Button
-            android:id="@+id/likeButton"
-            android:layout_width="0dp"
+
+        <RadioGroup
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:text="LiKE"
-            android:textSize="24sp"
-            android:textColor="@color/colorAccent"
-            android:background="@drawable/button_round_left"
-            android:drawableLeft="@drawable/like_button_circle"
-            />
-        <Button
-            android:id="@+id/disLikeButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:text="DiSLiKE"
-            android:textSize="24sp"
-            android:textColor="@color/colorAccent"
-            android:background="@drawable/button_round_right"
-            android:drawableRight="@drawable/dislike_button_circle"
-            />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/likeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="LiKE"
+                android:textSize="24sp"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/button_round_left"
+                android:drawableLeft="@drawable/like_button_circle"
+                />
+            <Button
+                android:id="@+id/disLikeButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="DiSLiKE"
+                android:textSize="24sp"
+                android:textColor="@color/colorAccent"
+                android:background="@drawable/button_round_right"
+                android:drawableRight="@drawable/dislike_button_circle"
+                />
+
+        </RadioGroup>
     </LinearLayout>
 </LinearLayout>
