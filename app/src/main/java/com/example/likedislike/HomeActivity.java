@@ -90,24 +90,24 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "실패", Toast.LENGTH_SHORT).show();
             }
         });
-        }
     }
+}
 
-    class LDLObject {
-        String email;
-        String text;
-        int like=0;
-        int dislike=0;
+class LDLObject {
+    String email;
+    String text;
+    int like=0;
+    int dislike=0;
 
-        LDLObject(){}
+    LDLObject(){}
 
-        LDLObject(String email, String text, int like, int dislike) {
-            this.email = email;
-            this.text = text;
-            this.like = like;
-            this.dislike = dislike;
-        }
+    LDLObject(String email, String text, int like, int dislike) {
+        this.email = email;
+        this.text = text;
+        this.like = like;
+        this.dislike = dislike;
     }
+}
 
     class LDLAdapter extends BaseAdapter {
         private ArrayList<LDLObject> dataSet;
@@ -168,9 +168,41 @@ public class HomeActivity extends AppCompatActivity {
             });
 
             return convertView;
-
-
         }
+        
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        convertView = inflater.inflate(R.layout.listview_item, null);
+        TextView emailView = convertView.findViewById(R.id.emailView);
+        TextView textView = convertView.findViewById(R.id.textView);
+        final Button likeButton = convertView.findViewById(R.id.likeButton);
+        final Button disLikeButton = convertView.findViewById(R.id.disLikeButton);
+
+        final LDLObject ldl = dataSet.get(position);
+        emailView.setText(ldl.email);
+        textView.setText(ldl.text);
+        likeButton.setText("LIKE : "+ldl.like);
+        disLikeButton.setText("DISLIKE : "+ldl.dislike);
+
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                likeButton.setSelected(true);
+                disLikeButton.setSelected(false);
+                ldl.like++;
+            }
+        });
+
+        disLikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                likeButton.setSelected(false);
+                disLikeButton.setSelected(true);
+                ldl.dislike++;
+            }
+        });
+        return convertView;
     }
 
 
