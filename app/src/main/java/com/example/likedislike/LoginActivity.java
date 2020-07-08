@@ -120,6 +120,5 @@ public class LoginActivity extends AppCompatActivity {
 ////        Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
 ////        startActivity(LogOutIntent);
 ////    }
-
 }
 
