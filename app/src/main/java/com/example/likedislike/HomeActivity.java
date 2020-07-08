@@ -202,6 +202,7 @@ public class HomeActivity extends AppCompatActivity {
                         info = ldl.toMap();
                         childUpdate.put("post" + position, info);
                         Log.d("Yahoo",""+position);
+                        myRef.updateChildren(childUpdate);
                         notifyDataSetChanged();
                         likeButton.setEnabled(false);
                         disLikeButton.setEnabled(false);
