@@ -4,9 +4,6 @@
     <item
         android:drawable="@drawable/non_clicked_button_circle"/>
     <item
-        android:state_selected="true"
+        android:state_pressed="true"
         android:drawable="@drawable/like_button_circle"/>
-    <item
-        android:state_selected="false"
-        android:drawable="@drawable/non_clicked_button_circle"/>
 </selector>
