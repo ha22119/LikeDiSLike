@@ -5,11 +5,15 @@
         <item>2학년</item>
         <item>3학년</item>
     </string-array>
-    <string-array name="주제">
+    <string-array name="subject">
         <item>전체</item>
         <item>음식</item>
         <item>전공</item>
-        <item>옷</item>
+        <item>기타</item>
+    </string-array>
+    <string-array name="write_subject">
+        <item>음식</item>
+        <item>전공</item>
         <item>기타</item>
     </string-array>
 </resources>
