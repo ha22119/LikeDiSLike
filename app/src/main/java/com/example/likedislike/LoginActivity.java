@@ -99,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validateForm() { // 이게 형식이 맞는지 확인하기
         boolean valid = true;
 
-        String email = editEmail.getText().toString();
+        String email_before = editEmail.getText().toString();
+        String email = email_before.replace(" ","");
+
         if (TextUtils.isEmpty(email)) { // 이메일이 비어있으면 false 반환
             valid = false;
         } else {

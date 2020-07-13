@@ -33,12 +33,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity {
-    Spinner subjectSpinner;
     ListView listView;
-    ImageButton listButton,plusButton;
-    Button searchButton;
+    ImageButton signOutButton,plusButton;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = mAuth.getCurrentUser();
+    TextView seeEmail;
 
     public final static String TAG = "Yahoo";
     static boolean calledAlready = false;
@@ -63,12 +62,15 @@ public class HomeActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("likedislike"); // db 주소 저장
 
-        listButton = findViewById(R.id.listButton);
+        signOutButton = findViewById(R.id.signOutButton);
         listView = findViewById(R.id.listView);
         plusButton = findViewById(R.id.plusButton);
+        seeEmail=findViewById(R.id.seeEmail);
 
         ldlAdapter = new LDLAdapter(getApplicationContext(), dataSet);
         listView.setAdapter(ldlAdapter);
+
+        seeEmail.setText(currentUser.getEmail().toString());
 
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +79,18 @@ public class HomeActivity extends AppCompatActivity {
                 startActivityForResult(writeIntent,1);
             }
         });
+
+        signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+        Log.d(TAG,"로그아웃 함");
+        Toast.makeText(HomeActivity.this, "로그아웃 됨", Toast.LENGTH_SHORT).show();
+        Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
+        startActivity(LogOutIntent);
+            }
+        });
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -219,8 +233,8 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("Yahoo", "" + position);
                     myRef.updateChildren(childUpdate);
                     notifyDataSetChanged();
-                    likeButton.setEnabled(false);
-                    disLikeButton.setEnabled(false);
+            //        likeButton.setEnabled(false);
+              //      disLikeButton.setEnabled(false);
                 }
             });
 
@@ -235,15 +249,21 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("Yahoo", "" + position);
                     myRef.updateChildren(childUpdate);
                     notifyDataSetChanged();
-                    likeButton.setEnabled(false);
-                    disLikeButton.setEnabled(false);
+//                    likeButton.setEnabled(false);
+//                    disLikeButton.setEnabled(false);
                 }
             });
 
                 likeButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        return false;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                    builder.setTitle("LiKE를 누른 유저");
+                    builder.setMessage(ldl.likeUsers.toString());
+                    //builder.setMessage("실험");
+                        builder.show();
+
+                    return false;
                     }
                 });
 
@@ -251,6 +271,11 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v) {
                         // 누른 사람 보여주기
+                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                        builder.setTitle("DiSLiKE를 누른 유저");
+                        //builder.setMessage("실험");
+                        builder.setMessage(ldl.dislikeUsers.toString());
+                        builder.show();
 
                         return false;
                     }
