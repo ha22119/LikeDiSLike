@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +37,8 @@ public class HomeActivity extends AppCompatActivity {
     ListView listView;
     ImageButton listButton,plusButton;
     Button searchButton;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
 
     public final static String TAG = "Yahoo";
     static boolean calledAlready = false;
@@ -83,13 +88,21 @@ public class HomeActivity extends AppCompatActivity {
                     String text = fileSnapshot.child("text").getValue(String.class);
                     Long like = fileSnapshot.child("like").getValue(Long.class);
                     Long dislike = fileSnapshot.child("dislike").getValue(Long.class);
+                    String likeUsers = fileSnapshot.child("likeUsers").getValue(String.class);
+                    String dislikeUsers = fileSnapshot.child("dislikeUsers").getValue(String.class);
                     if(like == null){
                         like = 0l;
                     }
                     if(dislike == null){
                         dislike = 0l;
                     }
-                    LDLObject ldl = new LDLObject(user, text, like, dislike);
+                    if(likeUsers == null){
+                        likeUsers = "들숨";
+                    }
+                    if(dislike == null){
+                        dislikeUsers = "날숨";
+                    }
+                    LDLObject ldl = new LDLObject(user, text, like, dislike,likeUsers,dislikeUsers);
                     newInfo = ldl.toMap();
                     dataSet.add(ldl);
                     Log.d(TAG, "" + dataSet.size());
@@ -110,7 +123,9 @@ public class HomeActivity extends AppCompatActivity {
         Long dislike = 0l;
         String text =data.getStringExtra("text");
         String user =data.getStringExtra("user");
-        LDLObject ldlOb = new LDLObject(user,text,like,dislike);
+        String likeUsers = null;
+        String dislikeUsers = null;
+        LDLObject ldlOb = new LDLObject(user,text,like,dislike,likeUsers,dislikeUsers);
         newInfo = ldlOb.toMap();
         dataSet.add(ldlOb);
         childUpdate.put("post"+(dataSet.size()-1),newInfo);
@@ -124,15 +139,19 @@ public class HomeActivity extends AppCompatActivity {
         String text = "null";
         long like;
         long dislike;
+        String likeUsers = "들숨";
+        String dislikeUsers = "날숨";
 
         LDLObject(){} // 기본 생성자
 
-        public LDLObject(String user, String text, Long like, Long dislike) {
+        public LDLObject(String user, String text, Long like, Long dislike,String likeUsers,String dislikeUsers) {
             Log.d("Yahoo", "LDLObject 생성");
             this.user = user;
             this.text = text;
             this.like = like;
             this.dislike = dislike;
+            this.likeUsers = likeUsers;
+            this.dislikeUsers = dislikeUsers;
         }
 
         public Map<String, Object> toMap() {
@@ -141,6 +160,8 @@ public class HomeActivity extends AppCompatActivity {
             result.put("text", text);
             result.put("like", like);
             result.put("dislike", dislike);
+            result.put("likeUsers", likeUsers);
+            result.put("dislikeUsers", dislikeUsers);
             return result;
         }
     }
@@ -187,18 +208,41 @@ public class HomeActivity extends AppCompatActivity {
             likeButton.setText("LIKE : "+ldl.like);
             disLikeButton.setText("DISLIKE : "+ldl.dislike);
 
+            likeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "LIKE 선택", Toast.LENGTH_SHORT).show();
+                    ++ldl.like;
+                    ldl.likeUsers = ldl.likeUsers +"\n"+ currentUser.getEmail();
+                    info = ldl.toMap();
+                    childUpdate.put("post" + position, info);
+                    Log.d("Yahoo", "" + position);
+                    myRef.updateChildren(childUpdate);
+                    notifyDataSetChanged();
+                    likeButton.setEnabled(false);
+                    disLikeButton.setEnabled(false);
+                }
+            });
+
+            disLikeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "DISLIKE 선택", Toast.LENGTH_SHORT).show();
+                    ++ldl.dislike;
+                    ldl.dislikeUsers = ldl.dislikeUsers +"\n"+ currentUser.getEmail();
+                    info = ldl.toMap();
+                    childUpdate.put("post" + position, info);
+                    Log.d("Yahoo", "" + position);
+                    myRef.updateChildren(childUpdate);
+                    notifyDataSetChanged();
+                    likeButton.setEnabled(false);
+                    disLikeButton.setEnabled(false);
+                }
+            });
+
                 likeButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getApplicationContext(), "LIKE 선택", Toast.LENGTH_SHORT).show();
-                        ++ldl.like;
-                        info = ldl.toMap();
-                        childUpdate.put("post" + position, info);
-                        Log.d("Yahoo", "" + position);
-                        myRef.updateChildren(childUpdate);
-                        notifyDataSetChanged();
-                        likeButton.setEnabled(false);
-                        disLikeButton.setEnabled(false);
                         return false;
                     }
                 });
@@ -206,15 +250,8 @@ public class HomeActivity extends AppCompatActivity {
                 disLikeButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getApplicationContext(), "DISLIKE 선택", Toast.LENGTH_SHORT).show();
-                        ++ldl.dislike;
-                        info = ldl.toMap();
-                        childUpdate.put("post" + position, info);
-                        Log.d("Yahoo", "" + position);
-                        myRef.updateChildren(childUpdate);
-                        notifyDataSetChanged();
-                        likeButton.setEnabled(false);
-                        disLikeButton.setEnabled(false);
+                        // 누른 사람 보여주기
+
                         return false;
                     }
                 });
