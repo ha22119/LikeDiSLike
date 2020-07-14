@@ -3,9 +3,10 @@ package com.example.likedislike;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -225,44 +225,48 @@ public class HomeActivity extends AppCompatActivity {
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "LIKE 선택", Toast.LENGTH_SHORT).show();
-                    ++ldl.like;
-                    ldl.likeUsers = ldl.likeUsers +"\n"+ currentUser.getEmail();
-                    info = ldl.toMap();
-                    childUpdate.put("post" + position, info);
-                    Log.d("Yahoo", "" + position);
-                    myRef.updateChildren(childUpdate);
-                    notifyDataSetChanged();
-            //        likeButton.setEnabled(false);
-              //      disLikeButton.setEnabled(false);
-                }
+                    String currentUserEmail = currentUser.getEmail();
+                    assert currentUserEmail != null;
+                        if (ldl.dislikeUsers.contains(currentUserEmail) || ldl.likeUsers.contains(currentUserEmail)) {
+                            Toast.makeText(HomeActivity.this, "이미 투표한 글 입니다.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "LIKE 선택", Toast.LENGTH_SHORT).show();
+                            ++ldl.like;
+                            ldl.likeUsers = ldl.likeUsers + "\n" + currentUser.getEmail();
+                            info = ldl.toMap();
+                            childUpdate.put("post" + position, info);
+                            Log.d("Yahoo", "" + position);
+                            myRef.updateChildren(childUpdate);
+                            notifyDataSetChanged();
+                        }
+                    }
             });
 
             disLikeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(), "DISLIKE 선택", Toast.LENGTH_SHORT).show();
-                    ++ldl.dislike;
-                    ldl.dislikeUsers = ldl.dislikeUsers +"\n"+ currentUser.getEmail();
-                    info = ldl.toMap();
-                    childUpdate.put("post" + position, info);
-                    Log.d("Yahoo", "" + position);
-                    myRef.updateChildren(childUpdate);
-                    notifyDataSetChanged();
-//                    likeButton.setEnabled(false);
-//                    disLikeButton.setEnabled(false);
-                }
+                    String currentUserEmail = currentUser.getEmail();
+                        assert currentUserEmail != null;
+                        if (ldl.dislikeUsers.contains(currentUserEmail) || ldl.likeUsers.contains(currentUserEmail)) {
+                            Toast.makeText(HomeActivity.this, "이미 투표한 글 입니다.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "DISLIKE 선택", Toast.LENGTH_SHORT).show();
+                            ++ldl.dislike;
+                            ldl.dislikeUsers = ldl.dislikeUsers + "\n" + currentUser.getEmail();
+                            info = ldl.toMap();
+                            childUpdate.put("post" + position, info);
+                            Log.d("Yahoo", "" + position);
+                            myRef.updateChildren(childUpdate);
+                            notifyDataSetChanged();
+                        }
+                    }
             });
 
                 likeButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                    builder.setTitle("LiKE를 누른 유저");
-                    builder.setMessage(ldl.likeUsers.toString());
-                    //builder.setMessage("실험");
-                        builder.show();
-
+                    CustomDialog likeDialog = new CustomDialog(HomeActivity.this);
+                    likeDialog.callCustomDlg_like(ldl.likeUsers);
                     return false;
                     }
                 });
@@ -271,16 +275,34 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v) {
                         // 누른 사람 보여주기
-                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-                        builder.setTitle("DiSLiKE를 누른 유저");
-                        //builder.setMessage("실험");
-                        builder.setMessage(ldl.dislikeUsers.toString());
-                        builder.show();
-
+                        CustomDialog dislikeDialog = new CustomDialog(HomeActivity.this);
+                        dislikeDialog.callCustomDlg_dislike(ldl.dislikeUsers);
                         return false;
                     }
                 });
                 return convertView;
+        }
+    }
+
+    public class CustomDialog {
+        private Context context;
+
+        public CustomDialog(Context context) {
+            this.context = context;
+        }
+        public void callCustomDlg_like(String text) {
+            final Dialog dlg = new Dialog(context);
+            dlg.setContentView(R.layout.like_custim_dialog);
+            AppCompatTextView like_textView =dlg.findViewById(R.id.like_textView);
+            like_textView.setText(text);
+            dlg.show();
+        }
+        public void callCustomDlg_dislike(String text) {
+            final Dialog dlg = new Dialog(context);
+            dlg.setContentView(R.layout.dislike_custom_dialog);
+            AppCompatTextView dislike_textView =dlg.findViewById(R.id.dislike_textView);
+            dislike_textView.setText(text);
+            dlg.show();
         }
     }
 }
