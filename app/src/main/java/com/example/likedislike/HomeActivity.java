@@ -84,10 +84,10 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
-        Log.d(TAG,"로그아웃 함");
-        Toast.makeText(HomeActivity.this, "로그아웃 됨", Toast.LENGTH_SHORT).show();
-        Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(LogOutIntent);
+                Log.d(TAG,"로그아웃 함");
+                Toast.makeText(HomeActivity.this, "로그아웃 됨", Toast.LENGTH_SHORT).show();
+                Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(LogOutIntent);
             }
         });
 
