@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_border_layout">
+
+    <TextView
+        android:id="@+id/like_titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:padding="20dp"
+        android:gravity="center"
+        android:text="LiKE를 누른 사람"
+        />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/like_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:paddingLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="left"
+        android:text="라이크 실험용"/>
+    </ScrollView>
+
+</LinearLayout>
