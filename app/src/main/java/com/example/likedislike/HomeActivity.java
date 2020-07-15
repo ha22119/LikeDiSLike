@@ -111,10 +111,10 @@ public class HomeActivity extends AppCompatActivity {
                         dislike = 0l;
                     }
                     if(likeUsers == null){
-                        likeUsers = "들숨";
+                        likeUsers = "LiKE";
                     }
                     if(dislike == null){
-                        dislikeUsers = "날숨";
+                        dislikeUsers = "DiSLiKE";
                     }
                     LDLObject ldl = new LDLObject(user, text, like, dislike,likeUsers,dislikeUsers);
                     newInfo = ldl.toMap();
@@ -133,12 +133,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        currentUser = mAuth.getCurrentUser();
         Long like = 0l;
         Long dislike = 0l;
         String text =data.getStringExtra("text");
         String user =data.getStringExtra("user");
-        String likeUsers = null;
-        String dislikeUsers = null;
+        String likeUsers = "LiKE";
+        String dislikeUsers = "DiSLiKE";
         LDLObject ldlOb = new LDLObject(user,text,like,dislike,likeUsers,dislikeUsers);
         newInfo = ldlOb.toMap();
         dataSet.add(ldlOb);
@@ -221,16 +222,18 @@ public class HomeActivity extends AppCompatActivity {
             textView.setText(ldl.text);
             likeButton.setText("LIKE : "+ldl.like);
             disLikeButton.setText("DISLIKE : "+ldl.dislike);
+            final String ldl_like = ldl.likeUsers;
+            final String ldl_dislike = ldl.dislikeUsers;
 
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String currentUserEmail = currentUser.getEmail();
-                    assert currentUserEmail != null;
-                        if (ldl.dislikeUsers.contains(currentUserEmail) || ldl.likeUsers.contains(currentUserEmail)) {
+                    Log.d("yahoo",ldl_like);
+                    Log.d("yahoo",ldl_dislike);
+                        if (ldl.likeUsers.contains(currentUser.getEmail()) || ldl.dislikeUsers.contains(currentUser.getEmail())) {
                             Toast.makeText(HomeActivity.this, "이미 투표한 글 입니다.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "LIKE 선택", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this, "LIKE 선택", Toast.LENGTH_SHORT).show();
                             ++ldl.like;
                             ldl.likeUsers = ldl.likeUsers + "\n" + currentUser.getEmail();
                             info = ldl.toMap();
@@ -245,12 +248,13 @@ public class HomeActivity extends AppCompatActivity {
             disLikeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String currentUserEmail = currentUser.getEmail();
-                        assert currentUserEmail != null;
-                        if (ldl.dislikeUsers.contains(currentUserEmail) || ldl.likeUsers.contains(currentUserEmail)) {
+                    Log.d("yahoo",currentUser.getEmail());
+                    Log.d("yahoo",ldl_like);
+                    Log.d("yahoo",ldl_dislike);
+                    if (ldl_like.contains(currentUser.getEmail()) || ldl_dislike.contains(currentUser.getEmail())) {
                             Toast.makeText(HomeActivity.this, "이미 투표한 글 입니다.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "DISLIKE 선택", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HomeActivity.this, "DISLIKE 선택", Toast.LENGTH_SHORT).show();
                             ++ldl.dislike;
                             ldl.dislikeUsers = ldl.dislikeUsers + "\n" + currentUser.getEmail();
                             info = ldl.toMap();
