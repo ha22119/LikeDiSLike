@@ -55,12 +55,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        signOutButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                signOut();
-//            }
-//        });
     }
     @Override
     protected void onStart() {
@@ -115,13 +109,5 @@ public class LoginActivity extends AppCompatActivity {
         }
         return valid;
     }
-//    private void signOut() {
-////        mAuth.signOut();
-////        Log.d(TAG,"로그아웃 함");
-////        Toast.makeText(this, "로그아웃 됨",
-////                Toast.LENGTH_SHORT).show();
-////        Intent LogOutIntent = new Intent(getApplicationContext(),LoginActivity.class);
-////        startActivity(LogOutIntent);
-////    }
 }
 
