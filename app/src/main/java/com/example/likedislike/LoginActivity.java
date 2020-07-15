@@ -98,14 +98,11 @@ public class LoginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email)) { // 이메일이 비어있으면 false 반환
             valid = false;
-        } else {
         }
-
         String password = editPwd.getText().toString();
         if (TextUtils.isEmpty(password)) {
             valid = false;
             Toast.makeText(getApplicationContext(), "비밀번호가 입력되지 않았습니다.", Toast.LENGTH_SHORT).show();
-        }else {
         }
         return valid;
     }
