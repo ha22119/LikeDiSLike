@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity {
                     dataSet.clear();
                 }
                 for (DataSnapshot fileSnapshot : dataSnapshot.getChildren()) {
-                    String user = fileSnapshot.child("user").getValue(String.class);
+                    String title = fileSnapshot.child("title").getValue(String.class);
                     String text = fileSnapshot.child("text").getValue(String.class);
                     Long like = fileSnapshot.child("like").getValue(Long.class);
                     Long dislike = fileSnapshot.child("dislike").getValue(Long.class);
@@ -116,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
                     if(dislike == null){
                         dislikeUsers = "DiSLiKE";
                     }
-                    LDLObject ldl = new LDLObject(user, text, like, dislike,likeUsers,dislikeUsers);
+                    LDLObject ldl = new LDLObject(title, text, like, dislike,likeUsers,dislikeUsers);
                     newInfo = ldl.toMap();
                     dataSet.add(ldl);
                     Log.d(TAG, "" + dataSet.size());
@@ -137,10 +137,10 @@ public class HomeActivity extends AppCompatActivity {
         Long like = 0l;
         Long dislike = 0l;
         String text =data.getStringExtra("text");
-        String user =data.getStringExtra("user");
+        String title =data.getStringExtra("title");
         String likeUsers = "LiKE";
         String dislikeUsers = "DiSLiKE";
-        LDLObject ldlOb = new LDLObject(user,text,like,dislike,likeUsers,dislikeUsers);
+        LDLObject ldlOb = new LDLObject(title,text,like,dislike,likeUsers,dislikeUsers);
         newInfo = ldlOb.toMap();
         dataSet.add(ldlOb);
         childUpdate.put("post"+(dataSet.size()-1),newInfo);
@@ -150,18 +150,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public class LDLObject {
-        String user = "null";
+        String title = "title";
         String text = "null";
-        long like;
-        long dislike;
-        String likeUsers = "들숨";
-        String dislikeUsers = "날숨";
+        long like = 0l;
+        long dislike = 0l;
+        String likeUsers = "LiKE";
+        String dislikeUsers = "DiSLiKE";
 
         LDLObject(){} // 기본 생성자
 
-        public LDLObject(String user, String text, Long like, Long dislike,String likeUsers,String dislikeUsers) {
+        public LDLObject(String title, String text, Long like, Long dislike,String likeUsers,String dislikeUsers) {
             Log.d("Yahoo", "LDLObject 생성");
-            this.user = user;
+            this.title = title;
             this.text = text;
             this.like = like;
             this.dislike = dislike;
@@ -171,7 +171,7 @@ public class HomeActivity extends AppCompatActivity {
 
         public Map<String, Object> toMap() {
             HashMap<String, Object> result = new HashMap<>();
-            result.put("user", user);
+            result.put("title", title);
             result.put("text", text);
             result.put("like", like);
             result.put("dislike", dislike);
@@ -218,7 +218,7 @@ public class HomeActivity extends AppCompatActivity {
             final Button disLikeButton = convertView.findViewById(R.id.disLikeButton);
 
             final LDLObject ldl = dataSet.get(position);
-            emailView.setText(ldl.user);
+            emailView.setText(ldl.title);
             textView.setText(ldl.text);
             likeButton.setText("LIKE : "+ldl.like);
             disLikeButton.setText("DISLIKE : "+ldl.dislike);

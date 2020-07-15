@@ -42,11 +42,11 @@ public class WriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String text = textView.getText().toString();
-                String user = nameView.getText().toString();
+                String title = nameView.getText().toString();
 
                 Intent writeIntentBack = new Intent();
                 writeIntentBack.putExtra("text",text);
-                writeIntentBack.putExtra("user",user);
+                writeIntentBack.putExtra("title",title);
                 setResult(RESULT_OK,writeIntentBack);
                 finish();
             }
